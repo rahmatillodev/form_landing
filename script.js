@@ -4,7 +4,7 @@ const courses = [
       title: "CD IELTS — Standart",
       description:
         "Hozirgi darajang 5.5–6.5? 4–6 oy ichida 7.5+ ga chiqayotgan o‘quvchilar qatoriga qo‘shil. Har hafta real exam darajasidagi mock testlar — BEPUL. Joylar tez to‘lyapti, kech qolma.",
-      accent: "linear-gradient(130deg, #4c1d95, #7c3aed)",
+      accent: "linear-gradient(130deg, #1990e6, #2563eb)",
       image: "https://picsum.photos/800/600?random=1"
     },
     {
@@ -12,7 +12,7 @@ const courses = [
       title: "IELTS Intensive",
       description:
         "Vaqting kammi? Har kuni 2 soatlik intensiv mashg‘ulot bilan 1–2 oy ichida sezilarli sakrash qil. Bu kursni tanlaganlar ko‘pincha imtihonni birinchi urinishda topshiradi.",
-      accent: "linear-gradient(130deg, #4c1d95, #a78bfa)",
+      accent: "linear-gradient(130deg, #2563eb, #1990e6)",
       image: "https://picsum.photos/800/600?random=2"
     },
     {
@@ -20,7 +20,7 @@ const courses = [
       title: "Skill Based IELTS",
       description:
         "Qayerda yiqilyapsan — Writingmi? Speakingmi? Har bir skill bo‘yicha alohida ‘breakthrough’ qilamiz. Natija: zaif joying kuchli tomoningga aylanadi.",
-      accent: "linear-gradient(130deg, #7c3aed, #a78bfa)",
+      accent: "linear-gradient(130deg, #1990e6, #0f172a)",
       image: "https://picsum.photos/800/600?random=3"
     },
     {
@@ -28,7 +28,7 @@ const courses = [
       title: "General English",
       description:
         "0 dan boshlayotganlar uchun. 6 oy ichida erkin gapiradigan darajaga chiqayotgan talabalar bor. Agar hozir boshlamasang — yana 1 yil yo‘qotasiz.",
-      accent: "linear-gradient(130deg, #4c1d95, #7c3aed)",
+      accent: "linear-gradient(130deg, #2563eb, #0f172a)",
       image: "https://picsum.photos/800/600?random=4"
     },
     {
@@ -36,7 +36,7 @@ const courses = [
       title: "Compyuterda darslar",
       description:
         "Darslar kompyuterda o‘rganishga mo‘ljallangan. Platformadagi barcha darslar siz uchun o‘rganishga mos holda yaratilgan.",
-      accent: "linear-gradient(130deg, #4c1d95, #7c3aed)",
+      accent: "linear-gradient(130deg, #1990e6, #2563eb)",
       image: "https://picsum.photos/800/600?random=5"
     }
   ];
@@ -73,14 +73,17 @@ const courses = [
       // Swiper carousel (fade + autoplay + dots + arrows)
       // Docs: https://swiperjs.com/
       new window.Swiper(courseSwiperEl, {
-        effect: "fade",
-        fadeEffect: { crossFade: true },
-        speed: 850,
+        effect: "slide",
+        speed: 900,
         loop: true,
+        centeredSlides: true,
+        grabCursor: true,
         autoplay: {
-          delay: 15000,
+          delay: 6000,
           disableOnInteraction: false
         },
+        slidesPerView: 1,
+        spaceBetween: 0,
         pagination: {
           el: ".swiper-pagination",
           clickable: true
@@ -88,6 +91,11 @@ const courses = [
         navigation: {
           nextEl: ".swiper-button-next",
           prevEl: ".swiper-button-prev"
+        },
+        breakpoints: {
+          1024: {
+            slidesPerView: 1
+          }
         }
       });
     } else {
