@@ -196,10 +196,15 @@
 
     .card-head {
       margin-bottom: 0.8rem;
+      display: grid;
+      gap: 0.75rem;
+      align-items: center;
+      justify-content: space-between;
     }
 
     .top-pill {
-      display: inline-flex;
+      display: flex;
+      width: fit-content;
       align-items: center;
       gap: 0.5rem;
       padding: 0.45rem 0.85rem;
