@@ -16,7 +16,7 @@ const courses = [
       image: "https://picsum.photos/800/600?random=2"
     },
     {
-      badge: "🎯 Target natija",
+      badge: "🎯 Aniq natija",
       title: "Skill Based IELTS",
       description:
         "Qayerda yiqilyapsan — Writingmi? Speakingmi? Har bir skill bo‘yicha alohida ‘breakthrough’ qilamiz. Natija: zaif joying kuchli tomoningga aylanadi.",

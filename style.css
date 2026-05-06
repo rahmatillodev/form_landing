@@ -65,7 +65,7 @@
       color: rgba(255, 255, 255, 0.95);
       padding: 0.55rem 0.75rem;
       border-radius: 999px;
-      background: rgba(15, 10, 30, 0.35);
+      background: dodgerblue;
       border: 1px solid rgba(167, 139, 250, 0.25);
       backdrop-filter: blur(8px);
     }
@@ -103,7 +103,7 @@
 
     .slide-content {
       position: absolute;
-      inset: auto 0 0 0;
+      inset: auto 0 20px 0;
       z-index: 2;
       color: #fff;
       padding: 2.5rem clamp(1.25rem, 3vw, 3rem);
