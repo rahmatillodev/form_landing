@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="uz">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>IELTSCORE | Kursga yozilish</title>
+    <title>IELTSCORE</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -17,104 +17,147 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <main class="page">
-      <section class="carousel-section" aria-label="Kurslar galereyasi">
-        <div class="carousel-logo" aria-label="IELTSCORE logotip">IELTSCORE</div>
-        <div class="swiper course-swiper" id="courseSwiper" aria-label="Kurslar carousel">
-          <div class="swiper-wrapper" id="swiperWrapper"></div>
-          <div class="swiper-pagination" aria-label="Slayd ko'rsatkichlari"></div>
-          <div class="swiper-button-prev" aria-label="Oldingi kurs"></div>
-          <div class="swiper-button-next" aria-label="Keyingi kurs"></div>
+    <main class="landing">
+      <section class="carousel-section" aria-label="Course highlights">
+        <div class="brand-pill">IELTSCORE</div>
+        <div class="lang-switcher" role="group" aria-label="Language selector">
+          <button type="button" class="lang-btn is-active" data-lang="eng">ENG</button>
+          <button type="button" class="lang-btn" data-lang="uzb">UZB</button>
+          <button type="button" class="lang-btn" data-lang="rus">RUS</button>
+        </div>
+
+        <div class="swiper hero-swiper" id="heroSwiper">
+          <div class="swiper-wrapper">
+            <article class="swiper-slide hero-slide">
+              <div
+                class="hero-bg"
+                style="background-image: url(./1.png)"
+              ></div>
+              <div class="hero-overlay"></div>
+              <div class="hero-content">
+                <span class="slide-badge" data-i18n="slide1Badge">Top Course</span>
+                <h1 data-i18n="slide1Title">IELTS Results 7.0 - 8.0+</h1>
+                <p data-i18n="slide1Desc">Learn with proven mentors and a practical exam-focused system.</p>
+              </div>
+            </article>
+
+            <article class="swiper-slide hero-slide">
+              <div
+                class="hero-bg"
+                style="background-image: url(./2.png)"
+              ></div>
+              <div class="hero-overlay"></div>
+              <div class="hero-content">
+                <span class="slide-badge" data-i18n="slide2Badge">Premium Classrooms</span>
+                <h1 data-i18n="slide2Title">Modern Learning Environment</h1>
+                <p data-i18n="slide2Desc">Comfortable classrooms, strong discipline, and focused study plans.</p>
+              </div>
+            </article>
+
+            <article class="swiper-slide hero-slide">
+              <div
+                class="hero-bg"
+                style="background-image: url(./3.png)"
+              ></div>
+              <div class="hero-overlay"></div>
+              <div class="hero-content">
+                <span class="slide-badge" data-i18n="slide3Badge">IELTS 7+</span>
+                <h1 data-i18n="slide3Title">Happy Students, Real Progress</h1>
+                <p data-i18n="slide3Desc">Join learners who improved faster with structured practice.</p>
+              </div>
+            </article>
+            <article class="swiper-slide hero-slide">
+              <div
+                class="hero-bg"
+                style="background-image: url(./4.png)"
+              ></div>
+              <div class="hero-overlay"></div>
+              <div class="hero-content">
+                <span class="slide-badge" data-i18n="slide4Badge">IELTS 7+</span>
+                <h1 data-i18n="slide4Title">Happy Students, Real Progress</h1>
+                <p data-i18n="slide4Desc">Join learners who improved faster with structured practice.</p>
+              </div>
+            </article>
+          </div>
+
+          <div class="swiper-pagination" aria-label="Slider pagination"></div>
         </div>
       </section>
 
-      <section class="form-section" aria-label="Ro'yxatdan o'tish formasi">
+      <section class="form-section" aria-label="Registration form">
         <div class="form-card">
-          <form class="form" id="registrationForm" novalidate>
-            <header class="card-head">
-              <div class="top-pill" aria-label="Kursga yozilish badge">🎓 Kursga yozilish</div>
-
-              <div class="hero-title">
-                <div class="hero-line hero-line--gradient">IELTSCORE</div>
-                <!-- <div class="hero-line hero-line--white">Bepul darsga</div>
-                <div class="hero-line hero-line--gradient">yoziling!</div> -->
-              </div>
-
-              <p class="hero-subtext">
-                Ma'lumotlaringizni qoldiring — menejerlar siz bilan bog'lanishadi.
-              </p>
-
-              <div class="trust-row" aria-label="Ishonch belgilar">
-                <div class="trust-item">✅ Bepul birinchi dars</div>
-                <div class="trust-item">⚡ Tez o'sish</div>
-                <div class="trust-item">🌍 Kompyuterda darslar</div>
+          <form id="registrationForm" novalidate>
+            <header class="form-header">
+              <h2 data-i18n="formTitle">Get Your Free Lesson</h2>
+              <p data-i18n="formSubtitle">Leave your details and our advisor will contact you shortly.</p>
+              <div class="trust-badges">
+                <span data-i18n="trust1">1000+ students enrolled</span>
+                <span data-i18n="trust2">Free first lesson</span>
               </div>
             </header>
 
-            <div class="form-fields" id="formFields">
-              <div class="field">
-              <input
-                id="nameInput"
-                class="field-input"
-                type="text"
-                name="name"
-                placeholder="Masalan: Alibek Yusupov"
-                autocomplete="name"
-              />
-              <label class="field-label" for="nameInput">Ismingiz</label>
-              <svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  fill="currentColor"
-                  d="M12 12a5 5 0 1 0-5-5a5 5 0 0 0 5 5m0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5"
-                />
-              </svg>
-              <p class="error-message" id="nameError" aria-live="polite"></p>
+            <div id="formFields">
+              <div class="field-group">
+                <div class="field">
+                  <input
+                    id="nameInput"
+                    name="name"
+                    type="text"
+                    class="field-input"
+                    placeholder=" "
+                    autocomplete="name"
+                  />
+                  <label for="nameInput" class="field-label" data-i18n="nameLabel">Full name</label>
+                  <svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                      fill="currentColor"
+                      d="M12 12a5 5 0 1 0-5-5a5 5 0 0 0 5 5m0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5"
+                    />
+                  </svg>
+                </div>
+                <p class="field-error" id="nameError" aria-live="polite"></p>
+              </div>
+
+              <div class="field-group">
+                <div class="field">
+                  <input
+                    id="phoneInput"
+                    name="phone"
+                    type="tel"
+                    class="field-input"
+                    placeholder=" "
+                    inputmode="numeric"
+                    autocomplete="tel"
+                  />
+                  <label for="phoneInput" class="field-label" data-i18n="phoneLabel">Phone number</label>
+                  <svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                      fill="currentColor"
+                      d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24a11.4 11.4 0 0 0 3.58.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.49a1 1 0 0 1 1 1a11.4 11.4 0 0 0 .57 3.58a1 1 0 0 1-.24 1.01z"
+                    />
+                  </svg>
+                </div>
+                <p class="field-error" id="phoneError" aria-live="polite"></p>
+              </div>
+
+              <div class="microcopy">
+                <p data-i18n="micro1">We will contact you within 30 minutes.</p>
+              </div>
+
+              <button type="submit" class="submit-btn" id="submitBtn">
+                <span class="btn-label" data-i18n="cta">Get Free Lesson →</span>
+              </button>
             </div>
 
-              <div class="field">
-              <input
-                id="phoneInput"
-                class="field-input"
-                type="tel"
-                name="phone"
-                placeholder="+998 90 123 45 67"
-                inputmode="numeric"
-                autocomplete="tel"
-              />
-              <label class="field-label" for="phoneInput"
-                >Telefon raqamingiz</label
-              >
-              <svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  fill="currentColor"
-                  d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24a11.4 11.4 0 0 0 3.58.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.49a1 1 0 0 1 1 1a11.4 11.4 0 0 0 .57 3.58a1 1 0 0 1-.24 1.01z"
-                />
-              </svg>
-              <p class="error-message" id="phoneError" aria-live="polite"></p>
-            </div>
-            </div>
-
-            <section class="success-state" id="successState" hidden aria-label="Muvaffaqiyat holati">
-              <div class="success-icon" aria-hidden="true">✅</div>
-              <div class="success-title">Tabriklaymiz!</div>
-              <div class="success-subtitle">Tez orada siz bilan bog'lanamiz.</div>
-              <div class="success-note">Odatda 30 daqiqa ichida</div>
+            <section id="successState" class="success-state" hidden>
+              <div class="success-icon">✓</div>
+              <h3 data-i18n="successTitle">Request sent successfully!</h3>
+              <p data-i18n="successText">We will call you shortly.</p>
             </section>
 
-            <button class="submit-btn" id="submitBtn" type="submit">
-              <span class="btn-label">Ariza yuborish →</span>
-            </button>
-
-            <p
-              class="success-message"
-              id="successMessage"
-              aria-live="polite"
-            ></p>
-
-            <footer class="card-footer">
-              <div class="callout">yoki to'g'ridan-to'g'ri qo'ng'iroq qiling</div>
-              <a class="call-link" href="tel:+998507558850">+998 50 755 88 50</a>
-            </footer>
+            <div class="bottom-phone-number">
+              <span></span>+998 50 755 88 50</span>
+            </div>
           </form>
         </div>
       </section>
