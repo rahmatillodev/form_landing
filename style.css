@@ -57,7 +57,7 @@ body {
   padding: 0;
   display: grid;
   gap: 24px;
-  grid-template-columns: minmax(0, 1.35fr) minmax(390px, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(390px, 1fr);
   align-items: stretch;
 }
 
@@ -501,7 +501,7 @@ body {
   }
 
   .carousel-section {
-    min-height: 360px;
+    min-height: 300px;
     border-radius: 22px;
   }
 
@@ -511,6 +511,10 @@ body {
 }
 
 @media (max-width: 576px) {
+  .carousel-section {
+    min-height: 240px;
+  }
+
   .top-header {
     top: 8px;
     border-radius: 14px;
