@@ -160,6 +160,8 @@ body {
 
 .hero-slide:first-child .hero-bg {
   background-size: contain;
+  background-position: 0% 0%;
+  background-repeat: no-repeat;
 }
 
 .hero-overlay {
@@ -479,7 +481,8 @@ body {
 
   .hero-slide:first-child .hero-bg {
     background-size: cover;
-    background-position: top center;
+    background-position: 0% 0%;
+    background-repeat: no-repeat;
   }
 
   .top-header {
@@ -513,7 +516,7 @@ body {
 
 @media (max-width: 576px) {
   .carousel-section {
-    min-height: 240px;
+    min-height: 280px;
   }
 
   .top-header {
