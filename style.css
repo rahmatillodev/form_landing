@@ -158,9 +158,9 @@ body {
   background-repeat: no-repeat;
 }
 
-/* .hero-slide:first-child .hero-bg {
+.hero-slide:first-child .hero-bg {
   background-size: contain;
-} */
+}
 
 .hero-overlay {
   position: absolute;
