@@ -479,6 +479,7 @@ body {
 
   .hero-slide:first-child .hero-bg {
     background-size: cover;
+    background-position: top center;
   }
 
   .top-header {
