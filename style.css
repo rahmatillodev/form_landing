@@ -32,79 +32,107 @@ body {
       rgba(255, 255, 255, 0) 62%
     ),
     var(--bg-main);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.top-header {
+  position: relative;
+  z-index: 30;
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.62);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 12px 34px rgba(15, 23, 42, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .landing {
-  min-height: 100vh;
-  padding: 20px;
+  min-height: 0;
+  padding: 0;
   display: grid;
-  gap: 18px;
-  grid-template-columns: 1.1fr 1fr;
+  gap: 24px;
+  grid-template-columns: minmax(0, 1.35fr) minmax(390px, 1fr);
+  align-items: stretch;
 }
 
 .carousel-section,
 .form-section {
-  min-height: calc(100vh - 40px);
+  min-height: 0;
 }
 
 .carousel-section {
   position: relative;
-  border-radius: 24px;
+  border-radius: 28px;
   overflow: hidden;
-  box-shadow: var(--shadow-soft);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  box-shadow: 0 26px 62px rgba(15, 23, 42, 0.14);
+  background: linear-gradient(145deg, #f9fbff, #f1f6ff);
 }
 
 .brand-pill {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  z-index: 5;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #fff;
   border-radius: 999px;
-  padding: 8px 12px;
+  padding: 9px 14px;
   background: linear-gradient(135deg, var(--primary-1), var(--primary-2));
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
 }
 
 .lang-switcher {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  z-index: 5;
   display: inline-flex;
-  gap: 6px;
-  border-radius: 999px;
-  padding: 4px;
-  background: rgba(15, 23, 42, 0.22);
-  backdrop-filter: blur(6px);
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
 }
 
-.lang-btn {
-  border: 0;
-  height: 32px;
-  min-width: 48px;
-  padding: 0 10px;
-  border-radius: 999px;
-  font-family: inherit;
-  font-size: 0.72rem;
-  font-weight: 700;
+.lang-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #475569;
   letter-spacing: 0.04em;
-  color: #fff;
-  background: transparent;
-  cursor: pointer;
-  transition: background-color 0.22s ease, transform 0.22s ease;
+  text-transform: uppercase;
 }
 
-.lang-btn:hover {
-  background: rgba(255, 255, 255, 0.18);
-}
-
-.lang-btn.is-active {
+.lang-select {
+  min-width: 96px;
+  height: 38px;
+  border: 1px solid rgba(148, 163, 184, 0.38);
+  border-radius: 999px;
+  padding: 0 30px 0 12px;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   color: #0f172a;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.88);
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
+  transition: border-color 0.22s ease, box-shadow 0.22s ease;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #2563eb 50%),
+    linear-gradient(135deg, #2563eb 50%, transparent 50%);
+  background-position: calc(100% - 16px) 15px, calc(100% - 11px) 15px;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.lang-select:hover {
+  border-color: rgba(37, 99, 235, 0.55);
+}
+
+.lang-select:focus-visible {
+  outline: none;
+  border-color: var(--primary-2);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.14);
 }
 
 .hero-swiper,
@@ -116,19 +144,29 @@ body {
 
 .hero-slide {
   position: relative;
+  background: #eef4ff;
 }
 
 .hero-bg {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #eef4ff;
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
+}
+
+.hero-slide:first-child .hero-bg {
+  background-size: contain;
 }
 
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(8, 13, 36, 0.2) 0%, rgba(8, 13, 36, 0.7) 82%);
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(15, 23, 42, 0.1) 100%);
 }
 
 .hero-content {
@@ -165,20 +203,23 @@ body {
 }
 
 .hero-swiper .swiper-pagination {
-  bottom: 14px !important;
+  bottom: 18px !important;
 }
 
 .hero-swiper .swiper-pagination-bullet {
-  width: 9px;
-  height: 9px;
+  width: 10px;
+  height: 10px;
   opacity: 1;
-  background: rgba(255, 255, 255, 0.45);
-  transition: transform 0.24s ease, background-color 0.24s ease;
+  border: 1px solid rgba(37, 99, 235, 0.32);
+  background: rgba(255, 255, 255, 0.9);
+  transition: transform 0.24s ease, background-color 0.24s ease, width 0.24s ease;
 }
 
 .hero-swiper .swiper-pagination-bullet-active {
-  transform: scale(1.2);
-  background: #fff;
+  width: 22px;
+  border-radius: 999px;
+  transform: scale(1);
+  background: linear-gradient(130deg, var(--primary-1), var(--primary-2));
 }
 
 .form-section {
@@ -188,11 +229,11 @@ body {
 
 .form-card {
   width: min(100%, 530px);
-  border-radius: 24px;
+  border-radius: 26px;
   border: 1px solid var(--border);
   background: var(--bg-card);
-  padding: clamp(24px, 4vh, 34px);
-  box-shadow: var(--shadow-soft);
+  padding: clamp(26px, 4.3vh, 36px);
+  box-shadow: 0 24px 55px rgba(15, 23, 42, 0.12);
 }
 
 .form-header h2 {
@@ -228,7 +269,7 @@ body {
 }
 
 #formFields {
-  margin-top: 18px;
+  margin-top: 20px;
 }
 
 .field-group + .field-group {
@@ -319,7 +360,7 @@ body {
 }
 
 .submit-btn {
-  margin-top: 16px;
+  margin-top: 18px;
   width: 100%;
   height: 56px;
   border: 0;
@@ -330,13 +371,14 @@ body {
   color: #fff;
   cursor: pointer;
   background: linear-gradient(130deg, var(--primary-1), var(--primary-2));
-  box-shadow: 0 16px 30px rgba(37, 99, 235, 0.28);
+  box-shadow: 0 16px 32px rgba(37, 99, 235, 0.3);
   transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease;
 }
 
 .submit-btn:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.05);
+  transform: translateY(-3px);
+  filter: brightness(1.05) saturate(1.05);
+  box-shadow: 0 20px 36px rgba(37, 99, 235, 0.36);
 }
 
 .submit-btn:active {
@@ -387,29 +429,119 @@ body {
   color: var(--text-muted);
 }
 
+@media (min-width: 993px) {
+  body {
+    height: 100vh;
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(390px, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    column-gap: 24px;
+    row-gap: 12px;
+    padding: 14px 20px 20px;
+    overflow: hidden;
+  }
+
+  .top-header {
+    grid-column: 2;
+    grid-row: 1;
+    width: min(100%, 530px);
+    justify-self: center;
+  }
+
+  .landing {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    min-height: 0;
+    height: 100%;
+  }
+
+  .carousel-section,
+  .form-section {
+    min-height: 0;
+    height: 100%;
+  }
+
+  .form-card {
+    max-height: 100%;
+    overflow: auto;
+  }
+}
+
 
 @media (max-width: 992px) {
+  body {
+    display: block;
+    height: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 0;
+  }
+
+  .hero-slide:first-child .hero-bg {
+    background-size: cover;
+  }
+
+  .top-header {
+    top: 10px;
+    margin: 10px 12px 0;
+    padding: 10px 12px;
+  }
+
   .landing {
     grid-template-columns: 1fr;
     padding: 12px;
+    gap: 14px;
+    min-height: auto;
   }
 
   .carousel-section,
   .form-section {
     min-height: auto;
+    height: auto;
   }
 
   .carousel-section {
-    min-height: 380px;
+    min-height: 360px;
+    border-radius: 22px;
   }
 
   .form-card {
     border-radius: 20px;
   }
+}
 
-  .lang-btn {
-    min-width: 44px;
-    height: 30px;
-    font-size: 0.68rem;
+@media (max-width: 576px) {
+  .top-header {
+    top: 8px;
+    border-radius: 14px;
+  }
+
+  .brand-pill {
+    font-size: 0.7rem;
+    padding: 8px 11px;
+  }
+
+  .lang-label {
+    display: none;
+  }
+
+  .lang-select {
+    min-width: 88px;
+    height: 34px;
+    font-size: 0.76rem;
+  }
+
+  .form-card {
+    padding: 20px 14px;
+    border-radius: 16px;
+  }
+
+  .form-header p {
+    width: 100%;
+  }
+
+  .trust-badges span {
+    font-size: 0.72rem;
+    padding: 4px 8px;
   }
 }
