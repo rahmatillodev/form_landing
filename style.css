@@ -478,7 +478,7 @@ body {
   }
 
   .hero-slide:first-child .hero-bg {
-    background-size: cover;
+    background-size: contain;
   }
 
   .top-header {
