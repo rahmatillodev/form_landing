@@ -477,9 +477,9 @@ body {
     padding: 0;
   }
 
-  /* .hero-slide:first-child .hero-bg {
-    background-size: contain;
-  } */
+  .hero-slide:first-child .hero-bg {
+    background-size: cover;
+  }
 
   .top-header {
     top: 10px;
