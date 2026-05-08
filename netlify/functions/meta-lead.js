@@ -81,6 +81,12 @@ exports.handler = async (event) => {
     };
   }
 
+  console.log("[Meta CAPI] Lead sent successfully", {
+    event_id: data.event_id,
+    event_name: data.event_name,
+    response: metaBody,
+  });
+
   return {
     statusCode: 200,
     body: JSON.stringify({
