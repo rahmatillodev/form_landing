@@ -323,7 +323,7 @@ if (form) {
     const phone = phoneInput.value.trim();
     const urlData = landing.getUrlAttributionData();
 
-    landing.trackMetaLead(urlData);
+    landing.trackMetaLead(urlData, fullName, phone);
 
     try {
       const client = await landing.whenSupabaseReadyPromise(6000);
@@ -376,6 +376,7 @@ initHeroMode();
   var SUPABASE_URL = "https://oqzluzzctiirxxhxsboc.supabase.co"; // supabase url prod
   // var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1peW9vdmltdHVweml1ZWh0Y3hpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgwMzkwNzMsImV4cCI6MjA4MzYxNTA3M30.aaCqOF-_s5s5AN-_ElrWZWch8nSVHNmQ1fvC4hi2OoY"; // supabase key dev
   var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xemx1enpjdGlpcnh4aHhzYm9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkwNTU1NTEsImV4cCI6MjA4NDYzMTU1MX0.fBFFWgbv4teapHpENVums7lrN1Bq5w22enSuDFofbdU"
+  var META_CAPI_ENDPOINT = "/.netlify/functions/meta-lead";
 
   function log() {
     if (typeof console !== "undefined" && console.log) console.log.apply(console, arguments);
@@ -451,25 +452,76 @@ initHeroMode();
     return fbclid ? "fb.1." + Math.floor(Date.now() / 1000) + "." + fbclid : "";
   }
 
-  function trackMetaLead(urlData) {
+  function createEventId() {
+    return "lead_" + Date.now() + "_" + Math.floor(Math.random() * 1000000000);
+  }
+
+  function trackMetaLead(urlData, fullName, phone) {
+    var eventId = createEventId();
     try {
       if (typeof fbq !== "function") {
         log("[Meta] fbq not available, skip Lead");
-        return;
+      } else {
+        var payload = {
+          content_name: "IELTS consultation"
+        };
+        if (urlData.utm_source) payload.utm_source = urlData.utm_source;
+        if (urlData.utm_medium) payload.utm_medium = urlData.utm_medium;
+        if (urlData.utm_campaign) payload.utm_campaign = urlData.utm_campaign;
+        if (urlData.utm_term) payload.utm_term = urlData.utm_term;
+        if (urlData.utm_content) payload.utm_content = urlData.utm_content;
+        fbq("track", "Lead", payload, { eventID: eventId });
+        log("[Meta] Lead tracked via Pixel, event_id=", eventId);
       }
-      var payload = {
-        content_name: "IELTS consultation"
-      };
-      if (urlData.utm_source) payload.utm_source = urlData.utm_source;
-      if (urlData.utm_medium) payload.utm_medium = urlData.utm_medium;
-      if (urlData.utm_campaign) payload.utm_campaign = urlData.utm_campaign;
-      if (urlData.utm_term) payload.utm_term = urlData.utm_term;
-      if (urlData.utm_content) payload.utm_content = urlData.utm_content;
-      fbq("track", "Lead", payload);
-      log("[Meta] Lead tracked");
     } catch (e) {
       logErr("[Meta] Lead track failed", e);
     }
+
+    sendMetaCapiLead(urlData, fullName, phone, eventId).catch(function (e) {
+      logErr("[Meta CAPI] send failed", e);
+    });
+  }
+
+  function sendMetaCapiLead(urlData, fullName, phone, eventId) {
+    var eventSourceUrl = "";
+    try {
+      eventSourceUrl = window.location.href || "";
+    } catch (e) {
+      eventSourceUrl = "";
+    }
+    return fetch(META_CAPI_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        event_name: "Lead",
+        event_time: Math.floor(Date.now() / 1000),
+        event_id: eventId,
+        event_source_url: eventSourceUrl,
+        full_name: fullName || "",
+        phone: phone || "",
+        fbp: getCookie("_fbp") || "",
+        fbc: urlData.fbclid ? buildFbcFromFbclid(urlData.fbclid) : getCookie("_fbc") || "",
+        fbclid: urlData.fbclid || "",
+        user_agent: navigator.userAgent || "",
+        utm_source: urlData.utm_source || "",
+        utm_medium: urlData.utm_medium || "",
+        utm_campaign: urlData.utm_campaign || "",
+        utm_term: urlData.utm_term || "",
+        utm_content: urlData.utm_content || ""
+      })
+    }).then(function (res) {
+      if (!res.ok) {
+        return res.text().then(function (text) {
+          throw new Error("Meta CAPI response " + res.status + ": " + text);
+        });
+      }
+      return res.json();
+    }).then(function (data) {
+      log("[Meta CAPI] Lead sent, event_id=", eventId, "response=", data);
+      return data;
+    });
   }
 
   function buildLeadRow(fullName, phone, urlData) {
@@ -580,191 +632,7 @@ initHeroMode();
       for (var i = 0; i < goLinks.length; i++) goLinks[i].href = goHref;
       log("[Attribution] go links updated, count=", goLinks.length, "params=", goQuery);
 
-      whenSupabaseReady(function (client) {
-        if (!client) {
-          logErr("[Attribution] Supabase client missing, skip attribution_logs");
-          return;
-        }
-        log("[Attribution] Supabase ready, will save to attribution_logs, id=", id);
-
-        function getC(name) {
-          var v = "; " + document.cookie;
-          var p = v.split("; " + name + "=");
-          return p.length === 2 ? p.pop().split(";").shift() : "";
-        }
-        function getFbpWait(t) {
-          t = t || 2000;
-          return new Promise(function (r) {
-            var start = Date.now();
-            if (getC("_fbp")) {
-              r(getC("_fbp"));
-              return;
-            }
-            var iv = setInterval(function () {
-              var x = getC("_fbp");
-              if (x) {
-                clearInterval(iv);
-                r(x);
-              } else if (Date.now() - start > t) {
-                clearInterval(iv);
-                r("");
-              }
-            }, 100);
-          });
-        }
-
-        var fbclid = urlData.fbclid;
-        var fbc = fbclid ? "fb.1." + Math.floor(Date.now() / 1000) + "." + fbclid : "";
-        function getDeviceInfo() {
-          var ua = navigator.userAgent || "";
-          var os = "Unknown";
-          if (/Android/i.test(ua)) os = "Android";
-          else if (/iPhone|iPod/i.test(ua)) os = "iOS";
-          else if (/iPad/i.test(ua)) os = "iPadOS";
-          else if (/Mac OS X|Macintosh/i.test(ua)) os = "macOS";
-          else if (/Windows/i.test(ua)) os = "Windows";
-          else if (/Linux/i.test(ua)) os = "Linux";
-          var browser = "Unknown";
-          if (/Edg\/|Edge/i.test(ua)) browser = "Edge";
-          else if (/OPR|Opera/i.test(ua)) browser = "Opera";
-          else if (/Chrome/i.test(ua) && !/Edg|OPR/i.test(ua)) browser = "Chrome";
-          else if (/Safari/i.test(ua) && !/Chrome|Chromium/i.test(ua)) browser = "Safari";
-          else if (/Firefox|FxiOS/i.test(ua)) browser = "Firefox";
-          return os + " " + browser;
-        }
-        var utms = {
-          source: urlData.utm_source,
-          medium: urlData.utm_medium,
-          campaign: urlData.utm_campaign,
-          term: urlData.utm_term,
-          content: urlData.utm_content
-        };
-
-        function saveRow(row) {
-          log("[Attribution] saveRow: calling insert attribution_logs, row keys=", Object.keys(row));
-          return client
-            .from("attribution_logs")
-            .insert([row])
-            .then(function (res) {
-              log("[Attribution] insert then: res=", res, "res.error=", res && res.error, "res.data=", res && res.data);
-              if (res && res.error) {
-                logErr(
-                  "[Attribution] insert Supabase error:",
-                  res.error.message || res.error,
-                  "code=",
-                  res.error.code,
-                  "details=",
-                  res.error.details
-                );
-                return;
-              }
-              log("[Attribution] insert SUCCESS, id=", id);
-            })
-            .catch(function (e) {
-              logErr("[Attribution] insert catch:", e && e.message, e);
-            });
-        }
-
-        function getGeoData() {
-          log("[Geo] request start");
-          return new Promise(function (resolve) {
-            var timeout = setTimeout(function () {
-              log("[Geo] timeout, returning empty");
-              resolve({ ip_address: "", city: "", state: "" });
-            }, 5000);
-            fetch("https://get.geojs.io/v1/ip/geo.json")
-              .then(function (r) {
-                if (!r.ok) {
-                  log("[Geo] fetch not ok", r.status, r.status === 429 ? "(rate limit)" : "");
-                  return Promise.reject(new Error(String(r.status)));
-                }
-                return r.json();
-              })
-              .then(function (data) {
-                clearTimeout(timeout);
-                var geo = {
-                  ip_address: data && data.ip ? String(data.ip) : "",
-                  city: data && data.city ? String(data.city) : "",
-                  state: data && data.region ? String(data.region) : ""
-                };
-                log("[Geo] success", geo);
-                resolve(geo);
-              })
-              .catch(function (err) {
-                clearTimeout(timeout);
-                log("[Geo] request failed, using empty geo", err && err.message);
-                resolve({ ip_address: "", city: "", state: "" });
-              });
-          });
-        }
-
-        function buildRow(geo) {
-          return {
-            id: id,
-            ip_address: (geo && geo.ip_address) || "",
-            city: (geo && geo.city) || "",
-            state: (geo && geo.state) || "",
-            device: getDeviceInfo(),
-            fbp: getC("_fbp") || "",
-            fbc: fbc,
-            fbclid: fbclid,
-            user_agent: navigator.userAgent || "",
-            utm_source: utms.source,
-            utm_medium: utms.medium,
-            utm_campaign: utms.campaign,
-            utm_term: utms.term,
-            utm_content: utms.content
-          };
-        }
-
-        log("[Attribution] step 1: insert now (geo empty), then fetch geo");
-        var row = buildRow({});
-        saveRow(row);
-
-        getGeoData().then(function (geo) {
-          log("[Attribution] geo received, optional update (may be blocked by RLS)", geo);
-          if (geo && (geo.ip_address || geo.city || geo.state)) {
-            client
-              .from("attribution_logs")
-              .update({
-                ip_address: geo.ip_address || "",
-                city: geo.city || "",
-                state: geo.state || ""
-              })
-              .eq("id", id)
-              .then(function (up) {
-                if (up && up.error) logErr("[Attribution] geo update error:", up.error.message);
-                else log("[Attribution] geo update done");
-              });
-          }
-        });
-
-        log("[Attribution] step 3: waiting for _fbp cookie");
-        getFbpWait(1500).then(function (fbp) {
-          if (fbp) {
-            log("[Attribution] fbp received, updating row");
-            client
-              .from("attribution_logs")
-              .update({ fbp: fbp })
-              .eq("id", id)
-              .then(function (up) {
-                log("[Attribution] fbp update then: up.error=", up && up.error);
-                if (up && up.error) {
-                  logErr(
-                    "[Attribution] fbp update error:",
-                    up.error.message || up.error,
-                    "details=",
-                    up.error.details
-                  );
-                } else {
-                  log("[Attribution] fbp update done");
-                }
-              });
-          } else {
-            log("[Attribution] no fbp after wait, skip update");
-          }
-        });
-      }, 2500);
+      log("[Attribution] attribution_logs writes disabled");
     })();
   }
 
