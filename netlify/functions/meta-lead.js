@@ -1,8 +1,8 @@
 const crypto = require("crypto");
 
-const META_PIXEL_ID = "4212436022332120";
+const META_PIXEL_ID = "1354108716770070";
 const META_CAPI_TOKEN =
-  "EAAXZB0yqRemIBQ7TwpEe4cj4eZCheZB9K5cH1ZBGrH7iFzlqJ6d4ow02pcR9j15DAFPThwa3bhr5XNu6jdXz1ZAmhUpODrgG80PZALovE9hXUf6EuMqpqpEKuRXWdZAXOPbEhPwlHZAH5VSsaZBaiFTAuAwuErskJb5h7G1vUREjWgBZBnXJPdnX4ZAvibZArZA8zww04hgZDZD";
+  "EAAhL7OZBZBPPoBRcCIB0B8KX3rK2qPOiAL2RPob84H6NGSVwFZAfdqcvpql8jZAfvQltwocM0b0MUewxGqJz2fchZAPTZANNklIBE4RjgpP2owLIuVn0qtnmunMfmZC3auebC3cdhCrWODWcZCmaUnN3880ab0BLwgQDRGdWbsIWeItqlrMpOiobXZAwG3GZBEiTUpfwZDZD";
 
 function normalizePhone(phone) {
   return String(phone || "").replace(/\D/g, "");

@@ -322,6 +322,10 @@ if (form) {
     const fullName = nameInput.value.trim();
     const phone = phoneInput.value.trim();
     const urlData = landing.getUrlAttributionData();
+    const videoSourceInput = document.getElementById("videoSourceInput");
+    if (videoSourceInput) {
+      videoSourceInput.value = urlData.video_source || "";
+    }
 
     landing.trackMetaLead(urlData, fullName, phone);
 
@@ -353,6 +357,10 @@ if (form) {
       formFields.hidden = true;
       successState.hidden = false;
       form.reset();
+
+      landing.sendVisitToSheet(urlData).catch(function (e) {
+        console.error("[Visits] send failed:", e);
+      });
     } catch (e) {
       console.error("[Lead] submit catch:", e);
       if (formSubmitError) {
@@ -377,6 +385,7 @@ initHeroMode();
   // var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1peW9vdmltdHVweml1ZWh0Y3hpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgwMzkwNzMsImV4cCI6MjA4MzYxNTA3M30.aaCqOF-_s5s5AN-_ElrWZWch8nSVHNmQ1fvC4hi2OoY"; // supabase key dev
   var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xemx1enpjdGlpcnh4aHhzYm9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkwNTU1NTEsImV4cCI6MjA4NDYzMTU1MX0.fBFFWgbv4teapHpENVums7lrN1Bq5w22enSuDFofbdU"
   var META_CAPI_ENDPOINT = "/.netlify/functions/meta-lead";
+  var VISITS_SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbyZHaXA9G64l4ttdksXrMlyeXcOv5KVYAGxcv-Y1vEw7MJSsAtIzcHe3Y6-2afNdEfR/exec";
 
   function log() {
     if (typeof console !== "undefined" && console.log) console.log.apply(console, arguments);
@@ -428,10 +437,12 @@ initHeroMode();
       utm_campaign: params ? params.get("utm_campaign") || "" : "",
       utm_term: params ? params.get("utm_term") || "" : "",
       utm_content: params ? params.get("utm_content") || "" : "",
-      fbclid: params ? params.get("fbclid") || "" : ""
+      fbclid: params ? params.get("fbclid") || "" : "",
+      ad: params ? params.get("ad") || "" : ""
     };
+    data.video_source = data.ad && AD_VIDEOS.includes(data.ad) ? data.ad : "organic";
     var hasAny =
-      data.utm_source || data.utm_medium || data.utm_campaign || data.utm_term || data.utm_content || data.fbclid;
+      data.utm_source || data.utm_medium || data.utm_campaign || data.utm_term || data.utm_content || data.fbclid || data.ad;
     log("[Attribution] urlData=", data, "hasAny=", !!hasAny);
     return data;
   }
@@ -524,6 +535,42 @@ initHeroMode();
     });
   }
 
+  function getAttributionId() {
+    try {
+      return sessionStorage.getItem("attribution_id") || "";
+    } catch (e) {
+      return "";
+    }
+  }
+
+  function sendVisitToSheet(urlData) {
+    var userId = getAttributionId() || createEventId();
+    var videoId = urlData.video_source || "organic";
+    var source = urlData.utm_source || (urlData.ad ? "meta-ad" : "direct");
+    return fetch(VISITS_SHEET_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        user_id: userId,
+        video_id: videoId,
+        source: source,
+        device: navigator.userAgent || ""
+      })
+    }).then(function (res) {
+      if (!res.ok) {
+        return res.text().then(function (text) {
+          throw new Error("Visits sheet response " + res.status + ": " + text);
+        });
+      }
+      return res.text();
+    }).then(function (result) {
+      log("[Visits] Sheet logged:", result, "user_id=", userId, "video_id=", videoId, "source=", source);
+      return result;
+    });
+  }
+
   function buildLeadRow(fullName, phone, urlData) {
     var fbclid = urlData.fbclid || "";
     var eventSourceUrl = "";
@@ -540,6 +587,8 @@ initHeroMode();
       utm_campaign: urlData.utm_campaign || "",
       utm_term: urlData.utm_term || "",
       utm_content: urlData.utm_content || "",
+      ad: urlData.ad || "",
+      video_source: urlData.video_source || "organic",
       fbclid: fbclid,
       fbp: getCookie("_fbp") || "",
       fbc: buildFbcFromFbclid(fbclid),
@@ -554,7 +603,8 @@ initHeroMode();
     getUrlAttributionData: getUrlAttributionData,
     whenSupabaseReadyPromise: whenSupabaseReadyPromise,
     trackMetaLead: trackMetaLead,
-    buildLeadRow: buildLeadRow
+    buildLeadRow: buildLeadRow,
+    sendVisitToSheet: sendVisitToSheet
   };
 
   function run() {
