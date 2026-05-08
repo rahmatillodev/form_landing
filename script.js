@@ -459,6 +459,20 @@ initHeroMode();
     return fbclid ? "fb.1." + Math.floor(Date.now() / 1000) + "." + fbclid : "";
   }
 
+  function fetchClientIp() {
+    return fetch("https://api.ipify.org?format=json")
+      .then(function (res) {
+        if (!res.ok) throw new Error("ipify " + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        return data && data.ip ? data.ip : "";
+      })
+      .catch(function () {
+        return "";
+      });
+  }
+
   function createEventId() {
     return "lead_" + Date.now() + "_" + Math.floor(Math.random() * 1000000000);
   }
@@ -496,12 +510,8 @@ initHeroMode();
     } catch (e) {
       eventSourceUrl = "";
     }
-    return fetch(META_CAPI_ENDPOINT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
+    return fetchClientIp().then(function (ipAddress) {
+      var requestBody = {
         event_name: "Lead",
         event_time: Math.floor(Date.now() / 1000),
         event_id: eventId,
@@ -512,12 +522,20 @@ initHeroMode();
         fbc: urlData.fbclid ? buildFbcFromFbclid(urlData.fbclid) : getCookie("_fbc") || "",
         fbclid: urlData.fbclid || "",
         user_agent: navigator.userAgent || "",
+        ip_address: ipAddress || "",
         utm_source: urlData.utm_source || "",
         utm_medium: urlData.utm_medium || "",
         utm_campaign: urlData.utm_campaign || "",
         utm_term: urlData.utm_term || "",
         utm_content: urlData.utm_content || ""
-      })
+      };
+      return fetch(META_CAPI_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(requestBody)
+      });
     }).then(function (res) {
       if (!res.ok) {
         return res.text().then(function (text) {

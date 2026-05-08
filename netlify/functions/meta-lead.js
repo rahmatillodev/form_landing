@@ -8,6 +8,19 @@ function normalizePhone(phone) {
   return String(phone || "").replace(/\D/g, "");
 }
 
+function normalizeText(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function parseName(fullName) {
+  const cleaned = String(fullName || "").trim().replace(/\s+/g, " ");
+  if (!cleaned) return { firstName: "", lastName: "" };
+  const parts = cleaned.split(" ");
+  const firstName = parts[0] || "";
+  const lastName = parts.slice(1).join(" ");
+  return { firstName, lastName };
+}
+
 function sha256(value) {
   return crypto.createHash("sha256").update(value).digest("hex");
 }
@@ -32,6 +45,9 @@ exports.handler = async (event) => {
 
   const phone = normalizePhone(payload.phone);
   const ph = phone ? [sha256(phone)] : undefined;
+  const { firstName, lastName } = parseName(payload.full_name);
+  const fn = firstName ? [sha256(normalizeText(firstName))] : undefined;
+  const ln = lastName ? [sha256(normalizeText(lastName))] : undefined;
   const eventTime = Number(payload.event_time) || Math.floor(Date.now() / 1000);
 
   const data = {
@@ -42,8 +58,11 @@ exports.handler = async (event) => {
     event_source_url: payload.event_source_url || "",
     user_data: {
       ph,
+      fn,
+      ln,
       fbp: payload.fbp || undefined,
       fbc: payload.fbc || undefined,
+      client_ip_address: payload.ip_address || undefined,
       client_user_agent: payload.user_agent || undefined,
     },
     custom_data: {
