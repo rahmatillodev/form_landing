@@ -3,6 +3,11 @@ const crypto = require("crypto");
 const META_PIXEL_ID = "1354108716770070";
 const META_CAPI_TOKEN =
   "EAAhL7OZBZBPPoBRcCIB0B8KX3rK2qPOiAL2RPob84H6NGSVwFZAfdqcvpql8jZAfvQltwocM0b0MUewxGqJz2fchZAPTZANNklIBE4RjgpP2owLIuVn0qtnmunMfmZC3auebC3cdhCrWODWcZCmaUnN3880ab0BLwgQDRGdWbsIWeItqlrMpOiobXZAwG3GZBEiTUpfwZDZD";
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
 
 function normalizePhone(phone) {
   return String(phone || "").replace(/\D/g, "");
@@ -26,9 +31,18 @@ function sha256(value) {
 }
 
 exports.handler = async (event) => {
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 204,
+      headers: CORS_HEADERS,
+      body: "",
+    };
+  }
+
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
+      headers: CORS_HEADERS,
       body: JSON.stringify({ error: "Method not allowed" }),
     };
   }
@@ -39,6 +53,7 @@ exports.handler = async (event) => {
   } catch (error) {
     return {
       statusCode: 400,
+      headers: CORS_HEADERS,
       body: JSON.stringify({ error: "Invalid JSON body" }),
     };
   }
@@ -92,6 +107,7 @@ exports.handler = async (event) => {
   if (!metaRes.ok) {
     return {
       statusCode: 502,
+      headers: CORS_HEADERS,
       body: JSON.stringify({
         error: "Meta CAPI request failed",
         status: metaRes.status,
@@ -100,14 +116,17 @@ exports.handler = async (event) => {
     };
   }
 
-  console.log("[Meta CAPI] Lead sent successfully", {
-    event_id: data.event_id,
-    event_name: data.event_name,
-    response: metaBody,
+  console.log('[Facebook] Sending event: Lead', {
+    pixel_id: META_PIXEL_ID,
+    event: 'Lead',
+    event_time: eventTime,
+    event_source_url: payload.event_source_url || "",
+    lead_context: data || null
   });
 
   return {
     statusCode: 200,
+    headers: CORS_HEADERS,
     body: JSON.stringify({
       ok: true,
       response: metaBody,

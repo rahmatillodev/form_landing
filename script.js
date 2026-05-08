@@ -380,7 +380,7 @@ initHeroMode();
   var SUPABASE_URL = "https://oqzluzzctiirxxhxsboc.supabase.co"; // supabase url prod
   // var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1peW9vdmltdHVweml1ZWh0Y3hpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgwMzkwNzMsImV4cCI6MjA4MzYxNTA3M30.aaCqOF-_s5s5AN-_ElrWZWch8nSVHNmQ1fvC4hi2OoY"; // supabase key dev
   var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xemx1enpjdGlpcnh4aHhzYm9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkwNTU1NTEsImV4cCI6MjA4NDYzMTU1MX0.fBFFWgbv4teapHpENVums7lrN1Bq5w22enSuDFofbdU"
-  var META_CAPI_ENDPOINT = "/.netlify/functions/meta-lead";
+  var META_CAPI_ENDPOINT_PATH = "/.netlify/functions/meta-lead";
   var VISITS_SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzwl9B7VuoOA3msq_nGWuhTkgqrPgKCqMec6OhE165jNMk21v4AHOqaLow-cq1oT6jj/exec";
 
   function log() {
@@ -388,6 +388,24 @@ initHeroMode();
   }
   function logErr() {
     if (typeof console !== "undefined" && console.error) console.error.apply(console, arguments);
+  }
+
+  function getMetaCapiEndpoint() {
+    try {
+      var customEndpoint = "";
+      if (typeof window !== "undefined" && typeof window.__META_CAPI_ENDPOINT === "string") {
+        customEndpoint = window.__META_CAPI_ENDPOINT.trim();
+      }
+      if (customEndpoint) return customEndpoint;
+
+      var protocol = (window.location && window.location.protocol) || "";
+      if (protocol === "http:" || protocol === "https:") {
+        return window.location.origin + META_CAPI_ENDPOINT_PATH;
+      }
+      return "";
+    } catch (e) {
+      return "";
+    }
   }
 
   function getSupabase() {
@@ -504,6 +522,11 @@ initHeroMode();
   }
 
   function sendMetaCapiLead(urlData, fullName, phone, eventId) {
+    var endpoint = getMetaCapiEndpoint();
+    if (!endpoint) {
+      log("[Meta CAPI] skipped: endpoint unavailable (set window.__META_CAPI_ENDPOINT for custom host)");
+      return Promise.resolve({ skipped: true, reason: "non-http-origin" });
+    }
     var eventSourceUrl = "";
     try {
       eventSourceUrl = window.location.href || "";
@@ -529,7 +552,7 @@ initHeroMode();
         utm_term: urlData.utm_term || "",
         utm_content: urlData.utm_content || ""
       };
-      return fetch(META_CAPI_ENDPOINT, {
+      return fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
