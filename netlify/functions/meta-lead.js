@@ -9,6 +9,14 @@ const CORS_HEADERS = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
+function safeJsonParse(raw) {
+  try {
+    return JSON.parse(raw);
+  } catch (error) {
+    return null;
+  }
+}
+
 function normalizePhone(phone) {
   return String(phone || "").replace(/\D/g, "");
 }
@@ -93,16 +101,62 @@ exports.handler = async (event) => {
   };
 
   const endpoint = `https://graph.facebook.com/v20.0/${META_PIXEL_ID}/events?access_token=${META_CAPI_TOKEN}`;
+  const requestPayload = { data: [data] };
+
+  console.log("================================================================================");
+  console.log("META CAPI - SENDING EVENT");
+  console.log("================================================================================");
+  console.log(
+    JSON.stringify(
+      {
+        endpoint: `https://graph.facebook.com/v20.0/${META_PIXEL_ID}/events`,
+        event_name: data.event_name,
+        event_id: data.event_id || null,
+        action_source: data.action_source,
+        payload: requestPayload,
+      },
+      null,
+      2
+    )
+  );
 
   const metaRes = await fetch(endpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ data: [data] }),
+    body: JSON.stringify(requestPayload),
   });
 
   const metaBody = await metaRes.text();
+  const parsedMetaBody = safeJsonParse(metaBody);
+
+  if (metaRes.ok) {
+    console.log("META CAPI - SUCCESS RESPONSE");
+    console.log(
+      JSON.stringify(
+        {
+          status: metaRes.status,
+          response: parsedMetaBody || metaBody,
+        },
+        null,
+        2
+      )
+    );
+  } else {
+    console.error("META CAPI - ERROR RESPONSE");
+    console.error(
+      JSON.stringify(
+        {
+          status: metaRes.status,
+          response: parsedMetaBody || metaBody,
+        },
+        null,
+        2
+      )
+    );
+  }
+  console.log("================================================================================");
 
   if (!metaRes.ok) {
     return {
