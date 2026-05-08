@@ -10,6 +10,10 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
     <link rel="stylesheet" href="style.css" />
     <!-- Replace REPLACE_WITH_META_PIXEL_ID with your Meta Pixel ID (digits only in Meta UI). -->
     <script>
@@ -66,8 +70,33 @@
     </header>
 
     <main class="landing">
-      <section class="hero-section" aria-label="Course highlights">
+      <section
+        class="hero-section"
+        id="heroSection"
+        aria-label="Course highlights"
+        style="display: none"
+      >
         <img id="heroImage" src="./1_uzb.png" alt="IELTSCORE" />
+      </section>
+
+      <section class="hero-section" id="carouselSection" style="display: none">
+        <div class="swiper hero-swiper" id="heroSwiper">
+          <div class="swiper-wrapper">
+            <article class="swiper-slide hero-slide">
+              <div class="hero-bg" style="background-image: url(./1_uzb.png)"></div>
+            </article>
+            <article class="swiper-slide hero-slide">
+              <div class="hero-bg" style="background-image: url(./2_uzb.png)"></div>
+            </article>
+            <article class="swiper-slide hero-slide">
+              <div class="hero-bg" style="background-image: url(./3_uzb.png)"></div>
+            </article>
+            <article class="swiper-slide hero-slide">
+              <div class="hero-bg" style="background-image: url(./4_uzb.png)"></div>
+            </article>
+          </div>
+          <div class="swiper-pagination"></div>
+        </div>
       </section>
 
       <section class="form-section" aria-label="Registration form">
@@ -177,6 +206,7 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

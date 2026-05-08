@@ -2,6 +2,7 @@ const htmlElement = document.documentElement;
 const langButtons = document.querySelectorAll(".lang-btn");
 const langSelect = document.getElementById("langSelect");
 const i18nNodes = document.querySelectorAll("[data-i18n]");
+const AD_VIDEOS = ["video1", "video2", "video3", "video4"];
 
 const translations = {
   eng: {
@@ -121,15 +122,67 @@ function applyHeroImage() {
   const params = new URLSearchParams(window.location.search);
   const ad = params.get("ad") || "video1";
   const adMap = {
-    video1: "1",
-    video2: "2",
-    video3: "3",
-    video4: "4",
-    video5: "5"
+    video1: "9",
+    video2: "6",
+    video3: "7",
+    video4: "8"
   };
-  const num = adMap[ad] || "5";
+  const num = adMap[ad] || "1";
   const img = document.getElementById("heroImage");
   if (img) img.src = `./${num}.png`;
+}
+
+function updateCarouselImages() {
+  const slides = document.querySelectorAll("#carouselSection .hero-bg");
+  const nums = ["1", "2", "3", "4"];
+  slides.forEach((slide, i) => {
+    if (nums[i]) {
+      slide.style.backgroundImage = `url(./${nums[i]}.png)`;
+    }
+  });
+}
+
+function initCarousel() {
+  const el = document.getElementById("heroSwiper");
+  if (el && window.Swiper) {
+    if (el.swiper) {
+      el.swiper.destroy(true, true);
+    }
+    new window.Swiper(el, {
+      effect: "slide",
+      slidesPerView: 1,
+      spaceBetween: 0,
+      speed: 800,
+      loop: true,
+      grabCursor: true,
+      autoplay: {
+        delay: 5000,
+        disableOnInteraction: false
+      },
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true
+      }
+    });
+  }
+}
+
+function initHeroMode() {
+  const params = new URLSearchParams(window.location.search);
+  const ad = params.get("ad");
+  const heroSection = document.getElementById("heroSection");
+  const carouselSection = document.getElementById("carouselSection");
+
+  if (ad && AD_VIDEOS.includes(ad)) {
+    if (heroSection) heroSection.style.display = "block";
+    if (carouselSection) carouselSection.style.display = "none";
+    applyHeroImage();
+  } else {
+    if (heroSection) heroSection.style.display = "none";
+    if (carouselSection) carouselSection.style.display = "block";
+    updateCarouselImages();
+    initCarousel();
+  }
 }
 
 function t(key) {
@@ -153,6 +206,7 @@ function applyTranslations() {
   }
 
   applyHeroImage();
+  updateCarouselImages();
 }
 
 langButtons.forEach((button) => {
@@ -313,7 +367,7 @@ if (form) {
 }
 
 applyTranslations();
-applyHeroImage();
+initHeroMode();
 
 (function () {
   "use strict";

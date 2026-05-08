@@ -155,6 +155,18 @@ body {
   align-items: center;
 }
 
+.hero-slide {
+  width: 100%;
+  height: 380px;
+}
+
+.hero-bg {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: top left ;
+}
+
 .form-section {
   width: 100%;
   display: grid;
@@ -401,6 +413,10 @@ body {
   #heroImage {
     max-height: 260px;
     border-radius: 22px;
+  }
+
+  .hero-slide {
+    height: 260px;
   }
 
   .form-card {
