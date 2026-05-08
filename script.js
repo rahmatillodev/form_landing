@@ -122,7 +122,7 @@ function applyHeroImage() {
   const params = new URLSearchParams(window.location.search);
   const ad = params.get("ad") || "video1";
   const adMap = {
-    video1: "9",
+    video1: "10",
     video2: "6",
     video3: "7",
     video4: "8"
