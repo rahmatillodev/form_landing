@@ -357,10 +357,6 @@ if (form) {
       formFields.hidden = true;
       successState.hidden = false;
       form.reset();
-
-      landing.sendVisitToSheet(urlData).catch(function (e) {
-        console.error("[Visits] send failed:", e);
-      });
     } catch (e) {
       console.error("[Lead] submit catch:", e);
       if (formSubmitError) {
@@ -385,7 +381,7 @@ initHeroMode();
   // var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1peW9vdmltdHVweml1ZWh0Y3hpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgwMzkwNzMsImV4cCI6MjA4MzYxNTA3M30.aaCqOF-_s5s5AN-_ElrWZWch8nSVHNmQ1fvC4hi2OoY"; // supabase key dev
   var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xemx1enpjdGlpcnh4aHhzYm9jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkwNTU1NTEsImV4cCI6MjA4NDYzMTU1MX0.fBFFWgbv4teapHpENVums7lrN1Bq5w22enSuDFofbdU"
   var META_CAPI_ENDPOINT = "/.netlify/functions/meta-lead";
-  var VISITS_SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbyZHaXA9G64l4ttdksXrMlyeXcOv5KVYAGxcv-Y1vEw7MJSsAtIzcHe3Y6-2afNdEfR/exec";
+  var VISITS_SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbzwl9B7VuoOA3msq_nGWuhTkgqrPgKCqMec6OhE165jNMk21v4AHOqaLow-cq1oT6jj/exec";
 
   function log() {
     if (typeof console !== "undefined" && console.log) console.log.apply(console, arguments);
@@ -549,8 +545,9 @@ initHeroMode();
     var source = urlData.utm_source || (urlData.ad ? "meta-ad" : "direct");
     return fetch(VISITS_SHEET_ENDPOINT, {
       method: "POST",
+      mode: "no-cors",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "text/plain"
       },
       body: JSON.stringify({
         user_id: userId,
@@ -558,16 +555,8 @@ initHeroMode();
         source: source,
         device: navigator.userAgent || ""
       })
-    }).then(function (res) {
-      if (!res.ok) {
-        return res.text().then(function (text) {
-          throw new Error("Visits sheet response " + res.status + ": " + text);
-        });
-      }
-      return res.text();
-    }).then(function (result) {
-      log("[Visits] Sheet logged:", result, "user_id=", userId, "video_id=", videoId, "source=", source);
-      return result;
+    }).then(function () {
+      log("[Visits] Sheet send attempted (no-cors)", "user_id=", userId, "video_id=", videoId, "source=", source);
     });
   }
 
@@ -654,13 +643,39 @@ initHeroMode();
         return s;
       }
 
-      var id = randId();
-      log("[Attribution] id generated", id);
+      var id = getAttributionId();
+      if (!id) {
+        id = randId();
+        log("[Attribution] id generated", id);
+      } else {
+        log("[Attribution] existing attribution_id found", id);
+      }
       try {
         sessionStorage.setItem("attribution_id", id);
         log("[Attribution] attribution_id saved to sessionStorage");
       } catch (e) {
         logErr("[Attribution] sessionStorage setItem failed", e);
+      }
+      try {
+        var sentKey = "visit_sent_" + id;
+        var visitAlreadySent = sessionStorage.getItem(sentKey) === "1";
+        if (!visitAlreadySent) {
+          sendVisitToSheet(urlData)
+            .then(function () {
+              sessionStorage.setItem(sentKey, "1");
+              log("[Visits] first page entry sent for attribution_id", id);
+            })
+            .catch(function (e) {
+              logErr("[Visits] page-entry send failed", e);
+            });
+        } else {
+          log("[Visits] skip duplicate page-entry for attribution_id", id);
+        }
+      } catch (e) {
+        logErr("[Visits] sessionStorage dedupe failed", e);
+        sendVisitToSheet(urlData).catch(function (err) {
+          logErr("[Visits] page-entry send failed without dedupe", err);
+        });
       }
       var goParams = [["id", id]];
       if (urlData.fbclid) goParams.push(["fbclid", urlData.fbclid]);
