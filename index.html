@@ -10,17 +10,15 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
-    />
     <link rel="stylesheet" href="style.css" />
     <!-- Replace REPLACE_WITH_META_PIXEL_ID with your Meta Pixel ID (digits only in Meta UI). -->
     <script>
       !(function (f, b, e, v, n, t, s) {
         if (f.fbq) return;
         n = f.fbq = function () {
-          n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+          n.callMethod
+            ? n.callMethod.apply(n, arguments)
+            : n.queue.push(arguments);
         };
         if (!f._fbq) f._fbq = n;
         n.push = n;
@@ -32,7 +30,12 @@
         t.src = v;
         s = b.getElementsByTagName(e)[0];
         s.parentNode.insertBefore(t, s);
-      })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
+      })(
+        window,
+        document,
+        "script",
+        "https://connect.facebook.net/en_US/fbevents.js",
+      );
       fbq("init", "REPLACE_WITH_META_PIXEL_ID");
       fbq("track", "PageView");
     </script>
@@ -50,7 +53,11 @@
     <header class="top-header" aria-label="Site header">
       <div class="brand-pill">IELTSCORE</div>
       <div class="lang-switcher">
-        <select id="langSelect" class="lang-select" aria-label="Language selector">
+        <select
+          id="langSelect"
+          class="lang-select"
+          aria-label="Language selector"
+        >
           <option value="eng">ENG</option>
           <option value="uzb">UZB</option>
           <option value="rus">RUS</option>
@@ -59,64 +66,8 @@
     </header>
 
     <main class="landing">
-      <section class="carousel-section" aria-label="Course highlights">
-
-        <div class="swiper hero-swiper" id="heroSwiper">
-          <div class="swiper-wrapper">
-            <article class="swiper-slide hero-slide">
-              <div
-                class="hero-bg"
-                style="background-image: url(./1.png)"
-              ></div>
-              <div class="hero-overlay"></div>
-              <!-- <div class="hero-content">
-                <span class="slide-badge" data-i18n="slide1Badge">Top Course</span>
-                <h1 data-i18n="slide1Title">IELTS Results 7.0 - 8.0+</h1>
-                <p data-i18n="slide1Desc">Learn with proven mentors and a practical exam-focused system.</p>
-              </div> -->
-            </article>
-
-            <article class="swiper-slide hero-slide">
-              <div
-                class="hero-bg"
-                style="background-image: url(./2.png)"
-              ></div>
-              <div class="hero-overlay"></div>
-              <!-- <div class="hero-content">
-                <span class="slide-badge" data-i18n="slide2Badge">Premium Classrooms</span>
-                <h1 data-i18n="slide2Title">Modern Learning Environment</h1>
-                <p data-i18n="slide2Desc">Comfortable classrooms, strong discipline, and focused study plans.</p>
-              </div> -->
-            </article>
-
-            <article class="swiper-slide hero-slide">
-              <div
-                class="hero-bg"
-                style="background-image: url(./3.png)"
-              ></div>
-              <div class="hero-overlay"></div>
-              <!-- <div class="hero-content">
-                <span class="slide-badge" data-i18n="slide3Badge">IELTS 7+</span>
-                <h1 data-i18n="slide3Title">Happy Students, Real Progress</h1>
-                <p data-i18n="slide3Desc">Join learners who improved faster with structured practice.</p>
-              </div> -->
-            </article>
-            <article class="swiper-slide hero-slide">
-              <div
-                class="hero-bg"
-                style="background-image: url(./4.png)"
-              ></div>
-              <div class="hero-overlay"></div>
-              <!-- <div class="hero-content">
-                <span class="slide-badge" data-i18n="slide4Badge">IELTS 7+</span>
-                <h1 data-i18n="slide4Title">Happy Students, Real Progress</h1>
-                <p data-i18n="slide4Desc">Join learners who improved faster with structured practice.</p>
-              </div> -->
-            </article>
-          </div>
-
-          <div class="swiper-pagination" aria-label="Slider pagination"></div>
-        </div>
+      <section class="hero-section" aria-label="Course highlights">
+        <img id="heroImage" src="./1_uzb.png" alt="IELTSCORE" />
       </section>
 
       <section class="form-section" aria-label="Registration form">
@@ -124,7 +75,9 @@
           <form id="registrationForm" novalidate>
             <header class="form-header">
               <h2 data-i18n="formTitle">Get Your Free Consultation</h2>
-              <p data-i18n="formSubtitle">Leave your details and our advisor will contact you shortly.</p>
+              <p data-i18n="formSubtitle">
+                Leave your details and our advisor will contact you shortly.
+              </p>
               <div class="trust-badges">
                 <span data-i18n="trust1">Computer-based IELTS practice</span>
                 <span data-i18n="trust2">Free consultation</span>
@@ -142,8 +95,17 @@
                     placeholder=" "
                     autocomplete="name"
                   />
-                  <label for="nameInput" class="field-label" data-i18n="nameLabel">Full name</label>
-                  <svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <label
+                    for="nameInput"
+                    class="field-label"
+                    data-i18n="nameLabel"
+                    >Full name</label
+                  >
+                  <svg
+                    class="field-icon"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
                     <path
                       fill="currentColor"
                       d="M12 12a5 5 0 1 0-5-5a5 5 0 0 0 5 5m0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5"
@@ -164,8 +126,17 @@
                     inputmode="numeric"
                     autocomplete="tel"
                   />
-                  <label for="phoneInput" class="field-label" data-i18n="phoneLabel">Phone number</label>
-                  <svg class="field-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <label
+                    for="phoneInput"
+                    class="field-label"
+                    data-i18n="phoneLabel"
+                    >Phone number</label
+                  >
+                  <svg
+                    class="field-icon"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
                     <path
                       fill="currentColor"
                       d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24a11.4 11.4 0 0 0 3.58.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.49a1 1 0 0 1 1 1a11.4 11.4 0 0 0 .57 3.58a1 1 0 0 1-.24 1.01z"
@@ -190,17 +161,21 @@
               <p data-i18n="successText">We will call you shortly.</p>
             </section>
 
-            <p class="field-error form-submit-error" id="formSubmitError" hidden aria-live="polite"></p>
+            <p
+              class="field-error form-submit-error"
+              id="formSubmitError"
+              hidden
+              aria-live="polite"
+            ></p>
 
             <div class="bottom-phone-number">
-              <span>+998 50 755 88 50</span>
+              <a href="tel:+998507558850" class="bottom-phone-number-link">+998 50 755 88 50</a>
             </div>
           </form>
         </div>
       </section>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
     <script src="script.js"></script>
   </body>

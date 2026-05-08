@@ -32,14 +32,19 @@ body {
       rgba(255, 255, 255, 0) 62%
     ),
     var(--bg-main);
+  display: block;
+  height: auto;
   overflow-x: hidden;
   overflow-y: auto;
+  padding: 12px;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .top-header {
   position: relative;
   z-index: 30;
-  margin: 0;
+  margin: 0 0 12px 0;
   padding: 12px 14px;
   border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.55);
@@ -55,18 +60,17 @@ body {
 .landing {
   min-height: 0;
   padding: 0;
-  display: grid;
-  gap: 24px;
-  grid-template-columns: minmax(0, 1fr) minmax(390px, 1fr);
-  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.carousel-section,
+.hero-section,
 .form-section {
   min-height: 0;
 }
 
-.carousel-section {
+.hero-section {
   position: relative;
   border-radius: 28px;
   overflow: hidden;
@@ -135,102 +139,31 @@ body {
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.14);
 }
 
-.hero-swiper,
-.hero-swiper .swiper-wrapper,
-.hero-swiper .swiper-slide {
+#heroImage {
   width: 100%;
-  height: 100%;
+  max-height: 380px;
+  object-fit: cover;
+  object-position: top left;
+  display: block;
+  border-radius: 22px;
 }
 
-.hero-slide {
-  position: relative;
-  background: #eef4ff;
-}
-
-.hero-bg {
-  position: absolute;
-  inset: 0;
+.hero-section {
   width: 100%;
-  height: 100%;
-  background-color: #eef4ff;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
-.hero-slide:first-child .hero-bg {
-  background-size: contain;
-  background-position: 0% 0%;
-  background-repeat: no-repeat;
-}
-
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, rgba(15, 23, 42, 0.1) 100%);
-}
-
-.hero-content {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 2;
-  color: #fff;
-  padding: 28px clamp(18px, 4vw, 42px) 34px;
-}
-
-.slide-badge {
-  display: inline-block;
-  margin-bottom: 12px;
-  border-radius: 999px;
-  padding: 6px 12px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: #0f172a;
-  background: rgba(255, 255, 255, 0.94);
-}
-
-.hero-content h1 {
-  font-size: clamp(1.55rem, 2.7vw, 2.5rem);
-  line-height: 1.15;
-  margin-bottom: 8px;
-}
-
-.hero-content p {
-  color: rgba(255, 255, 255, 0.92);
-  max-width: 50ch;
-  font-size: clamp(0.92rem, 1.1vw, 1.04rem);
-}
-
-.hero-swiper .swiper-pagination {
-  bottom: 18px !important;
-}
-
-.hero-swiper .swiper-pagination-bullet {
-  width: 10px;
-  height: 10px;
-  opacity: 1;
-  border: 1px solid rgba(37, 99, 235, 0.32);
-  background: rgba(255, 255, 255, 0.9);
-  transition: transform 0.24s ease, background-color 0.24s ease, width 0.24s ease;
-}
-
-.hero-swiper .swiper-pagination-bullet-active {
-  width: 22px;
-  border-radius: 999px;
-  transform: scale(1);
-  background: linear-gradient(130deg, var(--primary-1), var(--primary-2));
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
 }
 
 .form-section {
+  width: 100%;
   display: grid;
   place-items: center;
 }
 
 .form-card {
-  width: min(100%, 530px);
+  width: 100%;
+  max-width: 100%;
   border-radius: 26px;
   border: 1px solid var(--border);
   background: var(--bg-card);
@@ -271,12 +204,10 @@ body {
 }
 
 #formFields {
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
-.field-group + .field-group {
-  margin-top: 12px;
-}
+
 
 .field {
   position: relative;
@@ -431,45 +362,14 @@ body {
   color: var(--text-muted);
 }
 
-@media (min-width: 993px) {
-  body {
-    height: 100vh;
-    display: grid;
-    grid-template-columns: minmax(0, 1.35fr) minmax(390px, 1fr);
-    grid-template-rows: auto minmax(0, 1fr);
-    column-gap: 24px;
-    row-gap: 12px;
-    padding: 14px 20px 20px;
-    overflow: hidden;
-  }
-
-  .top-header {
-    grid-column: 2;
-    grid-row: 1;
-    width: min(100%, 530px);
-    justify-self: center;
-  }
-
-  .landing {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    min-height: 0;
-    height: 100%;
-  }
-
-  .carousel-section,
-  .form-section {
-    min-height: 0;
-    height: 100%;
-  }
-
-  .form-card {
-    max-height: 100%;
-    overflow: auto;
-  }
+.bottom-phone-number-link {
+  color: var(--text-muted);
+  text-decoration: none;
 }
-
-
+.bottom-phone-number-link:hover {
+  color: var(--text-main);
+  text-decoration: underline;
+}
 @media (max-width: 992px) {
   body {
     display: block;
@@ -477,12 +377,6 @@ body {
     overflow-x: hidden;
     overflow-y: auto;
     padding: 0;
-  }
-
-  .hero-slide:first-child .hero-bg {
-    background-size: cover;
-    background-position: 0% 0%;
-    background-repeat: no-repeat;
   }
 
   .top-header {
@@ -498,14 +392,14 @@ body {
     min-height: auto;
   }
 
-  .carousel-section,
+  .hero-section,
   .form-section {
     min-height: auto;
     height: auto;
   }
 
-  .carousel-section {
-    min-height: 300px;
+  #heroImage {
+    max-height: 260px;
     border-radius: 22px;
   }
 
@@ -515,10 +409,6 @@ body {
 }
 
 @media (max-width: 576px) {
-  .carousel-section {
-    min-height: 280px;
-  }
-
   .top-header {
     top: 8px;
     border-radius: 14px;

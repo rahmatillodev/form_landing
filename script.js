@@ -1,30 +1,7 @@
-const heroSwiperElement = document.getElementById("heroSwiper");
 const htmlElement = document.documentElement;
 const langButtons = document.querySelectorAll(".lang-btn");
 const langSelect = document.getElementById("langSelect");
 const i18nNodes = document.querySelectorAll("[data-i18n]");
-
-if (heroSwiperElement && typeof window !== "undefined" && window.Swiper) {
-  new window.Swiper(heroSwiperElement, {
-    effect: "slide",
-    slidesPerView: 1,
-    spaceBetween: 0,
-    centeredSlides: false,
-    roundLengths: true,
-    speed: 800,
-    loop: true,
-    grabCursor: true,
-    parallax: true,
-    autoplay: {
-      delay: 15000,
-      disableOnInteraction: false
-    },
-    pagination: {
-      el: ".swiper-pagination",
-      clickable: true
-    }
-  });
-}
 
 const translations = {
   eng: {
@@ -140,6 +117,21 @@ const supportedLangs = Object.keys(translations);
 let currentLang = localStorage.getItem("landing-lang");
 if (!supportedLangs.includes(currentLang)) currentLang = "uzb";
 
+function applyHeroImage() {
+  const params = new URLSearchParams(window.location.search);
+  const ad = params.get("ad") || "video1";
+  const adMap = {
+    video1: "1",
+    video2: "2",
+    video3: "3",
+    video4: "4",
+    video5: "5"
+  };
+  const num = adMap[ad] || "5";
+  const img = document.getElementById("heroImage");
+  if (img) img.src = `./${num}.png`;
+}
+
 function t(key) {
   return translations[currentLang][key] || translations.eng[key] || "";
 }
@@ -159,6 +151,8 @@ function applyTranslations() {
   if (langSelect) {
     langSelect.value = currentLang;
   }
+
+  applyHeroImage();
 }
 
 langButtons.forEach((button) => {
@@ -319,6 +313,7 @@ if (form) {
 }
 
 applyTranslations();
+applyHeroImage();
 
 (function () {
   "use strict";
